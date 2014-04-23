@@ -1,6 +1,6 @@
 // Name: Cory Siebler & Marcus Finney
 // Class: CSE430 #12109
-// Assignment: Project 2
+// Assignment: Project 4
 // Description: Holds routines to start threads, yield, and run
 
 #ifndef THREADS_H

@@ -1,6 +1,6 @@
 // Name: Cory Siebler & Marcus Finney
 // Class: CSE430 #12109
-// Assignment: Project 2
+// Assignment: Project 4
 // Description: initializes the TCB Queue and pointer for thread context 
 
 #ifndef TCB_H
