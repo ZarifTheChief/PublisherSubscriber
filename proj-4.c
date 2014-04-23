@@ -12,17 +12,14 @@
 // Global Definitions //
 //--------------------//
 #define SHELF_SIZE 5
+#define SUB_LIMIT 5
 
 //---------------------//
 // Global Declarations //
 //---------------------//
-int in = 0;
-int out = 0;
-int global = 0;
+int subCount = 0;
 int shelf[SHELF_SIZE];
 struct semaphore *sem;
-struct semaphore *empty;
-struct semaphore *full;
 
 //----------------------------//
 // Method Forward Declaration //
@@ -52,9 +49,8 @@ void subscriber() {
 // main Method //
 //-------------//
 int main() {
-	// Allocate memory for the two Semaphores
-	empty = (struct semaphore*) malloc(sizeof(struct semaphore));
-	full = (struct semaphore*) malloc(sizeof(struct semaphore));
+	// Allocate memory for the Semaphores
+	sem = (struct semaphore*) malloc(sizeof(struct semaphore));
 
 	// Allocate memory for the Run Queue to hold the threaded processes
 	runQ = (struct queue*) malloc(sizeof(struct queue));
@@ -62,18 +58,9 @@ int main() {
 	// Create the Queue
 	initQueue(runQ);
 
-	// Initialize the 2 Semaphores. Make empty = N and full = 0
-	initSem(empty, SHELF_SIZE);
-	initSem(full, 0);
-
-	// Prepare the shelf
-	initShelf();
-
 	// Add processes to threads
-	startThread(consumer1);
-	startThread(consumer2);
-	startThread(producer1);
-	startThread(producer2);
+	startThread(publisher);
+	startThread(subscriber);
 
 	// Begin execution of threads
 	run();
