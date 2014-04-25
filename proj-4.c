@@ -7,18 +7,17 @@
 // Include Files //
 //---------------//
 #include "sem.h"
+#include "items.h"
 
 //--------------------//
 // Global Definitions //
 //--------------------//
-#define SHELF_SIZE 5
 #define SUB_LIMIT 5
 
 //---------------------//
 // Global Declarations //
 //---------------------//
 int subCount = 0;
-int shelf[SHELF_SIZE];
 struct semaphore *sem;
 
 //----------------------------//

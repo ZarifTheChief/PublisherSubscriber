@@ -23,14 +23,14 @@ void startThread(void (*function)(void));
 void run();
 void yield();
 
-//---------------------//
-// start_thread Method //
-//---------------------//
+//--------------------//
+// startThread Method //
+//--------------------//
 void startThread(void (*function)(void)) {
-	TCB_t *temp = newItem();	// Create a new TCB to store process
-	void *stack = (void *) malloc(8192);	// Allocate the stack memory
-	init_TCB(temp, function, stack, 8192);	// Initialize the new TCB
-	addQueue(runQ, temp);	// Put the new TCB into the Run Queue
+	TCB_t *temp = newItem(); // Create a new TCB to store process
+	void *stack = (void *) malloc(8192); // Allocate the stack memory
+	init_TCB(temp, function, stack, 8192); // Initialize the new TCB
+	addQueue(runQ, temp); // Put the new TCB into the Run Queue
 
 	return;
 }

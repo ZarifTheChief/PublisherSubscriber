@@ -24,11 +24,11 @@ typedef struct queue {
 //----------------------------//
 // Method Forward Declaration //
 //----------------------------//
-void initQueue(struct queue*);	// creates an empty queue, pointed to by the variable head
-void addQueue(struct queue*, struct TCB_t*);	// adds a queue item, pointed to by "item", to the queue pointed to by head
-void rotQueue(struct queue*);	// Moves the header pointer to the next element in the queue
-struct TCB_t* delQueue(struct queue*);	// deletes an item from head and returns a pointer to the deleted item
-struct TCB_t* newItem();	// returns a pointer to a new q-element
+void initQueue(struct queue*); // Creates an empty queue, pointed to by the variable head
+void addQueue(struct queue*, struct TCB_t*); // Adds a queue item, pointed to by "item", to the queue pointed to by head
+void rotQueue(struct queue*); // Moves the header pointer to the next element in the queue
+struct TCB_t* delQueue(struct queue*); // Deletes an item from head and returns a pointer to the deleted item
+struct TCB_t* newItem(); // Returns a pointer to a new q-element
 
 //-------------------//
 // Routine Functions //
