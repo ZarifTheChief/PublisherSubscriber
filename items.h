@@ -11,6 +11,7 @@
 // Include Files //
 //---------------//
 #include <stdlib.h>
+#include <time.h>
 
 //----------------------------//
 // Data Structure Declaration //
@@ -42,6 +43,8 @@ struct item* createList(int value) {
 		return NULL;
 	}
 
+	if (DEBUG) printf("----------CREATING LIST----------\n");
+
 	volume++;
 	ptr->volume = volume;
 	ptr->value = value;
@@ -49,6 +52,8 @@ struct item* createList(int value) {
 
 	head = ptr;
 	curr = ptr;
+
+	if (DEBUG) printf("PUBLISHING: VOLUME(%d)\t%d\n", ptr->volume, ptr->value);
 
 	return ptr;
 }
@@ -75,6 +80,8 @@ struct item* addItem(int value) {
 
 	// Increment the Linked List Counter
 	volume++;
+
+	if (DEBUG) printf("PUBLISHING: VOLUME(%d)\t%d\n", ptr->volume, ptr->value);
 
 	return ptr;
 }

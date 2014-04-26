@@ -34,6 +34,17 @@ void subscriber();
 // publisher Method //
 //------------------//
 void publisher() {
+	// Initialize a new Linked List to Store the Items Published
+	createList(rand()); // Use a random number for Item
+
+	while (1) {
+		P(sem);
+		// Critical Section
+		addItem(rand());
+		// End Critical Section
+		V(sem);
+	}
+
 	return;
 }
 
@@ -48,6 +59,9 @@ void subscriber() {
 // main Method //
 //-------------//
 int main() {
+	// Define the Random Number Generator
+	srand(time(NULL));
+
 	// Allocate memory for the Semaphores
 	sem = (struct semaphore*) malloc(sizeof(struct semaphore));
 
