@@ -32,15 +32,17 @@ struct item *curr;
 //----------------------------//
 // Method Forward Declaration //
 //----------------------------//
-struct item* createList(int);
-struct item* addItem(int);
+void createList(int);
+void addItem(int);
+void readItem(struct item*);
 void printList();
 
-struct item* createList(int value) {
+void createList(int value) {
 	struct item *ptr = (struct item*) malloc(sizeof(struct item));
 
 	if (NULL == ptr) {
-		return NULL;
+		printf("ERROR: Could not allocate memory\n");
+		return;
 	}
 
 	if (DEBUG) printf("----------CREATING LIST----------\n");
@@ -53,20 +55,22 @@ struct item* createList(int value) {
 	head = ptr;
 	curr = ptr;
 
-	if (DEBUG) printf("PUBLISHING: VOLUME(%d)\t%d\n", ptr->volume, ptr->value);
+	printf("PUBLISHING: VOLUME(%d)\t%d\n\n", ptr->volume, ptr->value);
 
-	return ptr;
+	return;
 }
 
-struct item* addItem(int value) {
+void addItem(int value) {
 	if (NULL == head) {
-		return createList(value);
+		createList(value);
+		return;
 	}
 
 	struct item *ptr = (struct item*) malloc(sizeof(struct item));
 
 	if (NULL == ptr) {
-		return NULL;
+		printf("ERROR: Could not allocate memory\n");
+		return;
 	}
 
 	volume++;
@@ -78,19 +82,26 @@ struct item* addItem(int value) {
 	curr->next = ptr;
 	curr = ptr;
 
-	// Increment the Linked List Counter
-	volume++;
+	printf("PUBLISHING: VOLUME(%d)\t%d\n\n", ptr->volume, ptr->value);
 
-	if (DEBUG) printf("PUBLISHING: VOLUME(%d)\t%d\n", ptr->volume, ptr->value);
+	return;
+}
 
-	return ptr;
+void readItem(struct item *ptr) {
+	if (NULL == ptr) {
+		printf("ERROR: INVALID POINTER (READING)\n");
+		return;
+	}
+
+	printf("READING VOLUME(%d)\t%d\n", ptr->volume, ptr->value);	
+
+	return;
 }
 
 void printList() {
 	struct item *ptr = head;
 
 	printf("----------PRINTING VOLUMES----------\n");
-	printf("\n");
 
 	// Iterate over the Linked List of Items
 	while (NULL != ptr) {
@@ -98,10 +109,11 @@ void printList() {
 		ptr = ptr->next; // Iterate to next node
 	}
 
-	printf("\n");
 	printf("----------DONE PRINTING----------\n");
 	printf("\n");
 	printf("\n");
+
+	sleep(1);
 	
 	return;
 }
