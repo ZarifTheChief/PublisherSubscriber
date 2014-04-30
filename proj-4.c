@@ -18,12 +18,18 @@
 // Global Declarations //
 //---------------------//
 int subCount = 1;
-struct semaphore *sub;
-struct semaphore *pub;
+int readCount = 0;
+struct semaphore *no_waiting;
+struct semaphore *no_accessing;
+struct semaphore *counter_mutex;
 
 //----------------------------//
 // Method Forward Declaration //
 //----------------------------//
+void publisherEntry();
+void publisherExit();
+void subscriberEntry();
+void subscriberExit();
 
 //--------------------//
 // Threaded Functions //
@@ -31,18 +37,76 @@ struct semaphore *pub;
 void publisher();
 void subscriber();
 
+//-----------------------//
+// publisherEntry Method //
+//-----------------------//
+void publisherEntry() {
+	P(no_waiting);
+	P(no_accessing);
+	V(no_waiting);
+
+	return;
+}
+
+//----------------------//
+// publisherExit Method //
+//----------------------//
+void publisherExit() {
+	V(no_accessing);
+	
+	return;
+}
+
+//------------------------//
+// subscriberEntry Method //
+//------------------------//
+void subscriberEntry() {
+	int prev = 0;
+
+	P(no_waiting);
+	P(counter_mutex);
+	prev = readCount; // Set the previous number of readers
+	readCount++; // Increment the reader's count
+	V(counter_mutex);
+
+	if (prev == 0) {
+		P(no_accessing);
+	}
+
+	V(no_waiting);
+
+	return;
+}
+
+//-----------------------//
+// subscriberExit Method //
+//-----------------------//
+void subscriberExit() {
+	int current = 0;
+
+	P(counter_mutex);
+	readCount--; // Decrement the reader count
+	current = readCount; // Set the current number of readers
+	V(counter_mutex);
+
+	if (current == 0) {
+		V(no_accessing);
+	}
+
+	return;
+}
+
 //------------------//
 // publisher Method //
 //------------------//
 void publisher() {
 	while (1) {
-		P(sub);
-		// Critical Section
+		publisherEntry();
+		/*-----Critical Section-----*/
 		addItem(rand());
 		printList();
-		// End Critical Section
-		V(sub);
-		V(pub);
+		/*-----End Critical Section-----*/
+		publisherExit();
 	}
 
 	return;
@@ -55,52 +119,39 @@ void subscriber() {
 	// Grab the Subscriber ID from the Counter
 	int subID = subCount;
 
-	// Declare the Pointer to the Linked List of Items
-	struct item *volume = head;
+	// Declare the Pointer to the Linked List of Items & assign to start of List
+	struct item *currItem;
 
 	while (1) {
-		P(pub);
-		// Critical Section
-		if (DEBUG) printf("SUBSCRIBER(%d): CHECKING FOR ITEMS\n", subID);
+		subscriberEntry();
+		/*-----Critical Section-----*/
 
 		// Checking for Published Items
-		if (NULL == volume) {
-			printf("SUBSCRIBER(%d): ERROR CHECKED TOO EARLY\n", subID);
+		if (NULL == currItem) {
+			currItem = head;
+		} else if ((currItem->volume != head->volume) && (currItem->volume != curr->volume)) {
+			// Checking if Reader's Item is the First or the Latest Item
+			currItem = curr;
 		}
 
 		// Iterate over all Published Items
-		while (NULL != volume) {
-			// Print Subscriber Tag
-			printf("SUBSCRIBER(%d): ", subID);
-
-			// Read One Volume of Work 
-			readItem(volume);
-
-			volume = volume->next; // Iterate to next Item
+		while (NULL != currItem) {
+			printf("SUBSCRIBER(%d): ", subID); // Print Subscriber Tag
+			readItem(currItem); // Read one currItem of work
+			currItem = currItem->next; // Iterate to next Item
 		}
-
-		if (DEBUG) printf("SUBSCRIBER(%d): CHECKING SUB COUNT (%d)\n", subID, subCount);
 
 		if (subCount < SUB_LIMIT) {
 			// Call your buddy and add a new subscriber
 			subCount++;
 			startThread(subscriber);
-
-			if (DEBUG) printf("SUBSCRIBER(%d): ADDED NEW SUBSCRIBER\n", subID);
 		}
 
-		// End Critical Section
-		V(pub);
+		currItem = curr;
 
 		printf("\n");
-
-		P(sub);
-		// Critical Section
-		if (DEBUG) printf("SUBSCRIBER(%d): GRABBING CURRENT VOLUME\n", subID);
-		volume = curr;
-		printf("\n");
-		// End Critical Section
-		V(sub);
+		/*-----End Critical Section-----*/
+		subscriberExit();
 	}
 
 	return;
@@ -114,8 +165,9 @@ int main() {
 	srand(time(NULL));
 
 	// Allocate memory for the Semaphores
-	sub = (struct semaphore*) malloc(sizeof(struct semaphore));
-	pub = (struct semaphore*) malloc(sizeof(struct semaphore));
+	no_waiting = (struct semaphore*) malloc(sizeof(struct semaphore));
+	no_accessing = (struct semaphore*) malloc(sizeof(struct semaphore));
+	counter_mutex = (struct semaphore*) malloc(sizeof(struct semaphore));
 
 	// Allocate memory for the Run Queue to hold the threaded processes
 	runQ = (struct queue*) malloc(sizeof(struct queue));
@@ -124,8 +176,9 @@ int main() {
 	initQueue(runQ);
 
 	// Initialize the Semaphore
-	initSem(sub, 1);
-	initSem(pub, 0);
+	initSem(no_waiting, 1);
+	initSem(no_accessing, 1);
+	initSem(counter_mutex, 1);
 
 	// Add processes to threads
 	startThread(publisher);
