@@ -98,6 +98,7 @@ void subscriber() {
 		// Critical Section
 		if (DEBUG) printf("SUBSCRIBER(%d): GRABBING CURRENT VOLUME\n", subID);
 		volume = curr;
+		printf("\n");
 		// End Critical Section
 		V(sub);
 	}
