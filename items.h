@@ -37,68 +37,92 @@ void addItem(int);
 void readItem(struct item*);
 void printList();
 
+//-------------------//
+// createList Method //
+//-------------------//
 void createList(int value) {
+	// Declare & Initialize the Pointer to the Linked List
 	struct item *ptr = (struct item*) malloc(sizeof(struct item));
 
+	// Check to see if memory was allocated
 	if (NULL == ptr) {
 		printf("ERROR: Could not allocate memory\n");
 		return;
 	}
 
+	// Display Creation of Linked List
 	if (DEBUG) printf("----------CREATING LIST----------\n");
 
-	volume++;
-	ptr->volume = volume;
-	ptr->value = value;
-	ptr->next = NULL;
+	volume++; // Increment the Volume
+	ptr->volume = volume; // Assign the Published Item Volume
+	ptr->value = value; // Assign the Published Item a random integer value
+	ptr->next = NULL; // Assign the next pointer as NULL to terminate list
 
-	head = ptr;
-	curr = ptr;
+	head = ptr; // Assign the head pointer to the newly created Item
+	curr = ptr; // Assign the curr pointer to the newly created Item
 
+	// Display the Published Item Information
 	printf("PUBLISHING: VOLUME(%d)\t%d\n\n", ptr->volume, ptr->value);
 
 	return;
 }
 
+//----------------//
+// addItem Method //
+//----------------//
 void addItem(int value) {
+	// Check to see if Linked List has been created
 	if (NULL == head) {
+		// Create the Linked List if head is NULL
 		createList(value);
 		return;
 	}
 
+	// Declare & Initialize the Pointer to the Linked List
 	struct item *ptr = (struct item*) malloc(sizeof(struct item));
 
+	// Check to see if memory has been allocated
 	if (NULL == ptr) {
 		printf("ERROR: Could not allocate memory\n");
 		return;
 	}
 
-	volume++;
-	ptr->volume = volume;
-	ptr->value = value;	
-	ptr->next = NULL;
+	volume++; // Increment the Volume
+	ptr->volume = volume; // Assign the Published Item Volume
+	ptr->value = value; // Assign the Published Item a random integer value
+	ptr->next = NULL; // Assign the next pointer as NULL to terminate list
 
 	// Add Item to end of List
-	curr->next = ptr;
-	curr = ptr;
+	curr->next = ptr; // Attach new item to the end of the Linked List
+	curr = ptr; // Move the pointer to the new item
 
+	// Display the Published Item Information
 	printf("PUBLISHING: VOLUME(%d)\t%d\n\n", ptr->volume, ptr->value);
 
 	return;
 }
 
+//-----------------//
+// readItem Method //
+//-----------------//
 void readItem(struct item *ptr) {
+	// Check to see if Pointer is a valid Published Item
 	if (NULL == ptr) {
 		printf("ERROR: INVALID POINTER (READING)\n");
 		return;
 	}
 
+	// Display the Published Item Information
 	printf("READING VOLUME(%d)\t%d\n", ptr->volume, ptr->value);	
 
 	return;
 }
 
+//------------------//
+// printList Method //
+//------------------//
 void printList() {
+	// Declare & Initialize a Pointer to the beginning of the Linked List
 	struct item *ptr = head;
 
 	printf("----------PRINTING VOLUMES----------\n");
@@ -113,6 +137,7 @@ void printList() {
 	printf("\n");
 	printf("\n");
 
+	// Pause for Readability
 	sleep(1);
 	
 	return;
