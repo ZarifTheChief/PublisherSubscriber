@@ -128,8 +128,9 @@ void subscriber() {
 
 		// Checking for Published Items
 		if (NULL == currItem) {
+			// Grab the First Item Published
 			currItem = head;
-		} else if ((currItem->volume != head->volume) && (currItem->volume != curr->volume)) {
+		} else if (currItem->volume != curr->volume) {
 			// Checking if Reader's Item is the First or the Latest Item
 			currItem = curr;
 		}
@@ -147,6 +148,7 @@ void subscriber() {
 			startThread(subscriber);
 		}
 
+		// Reinitialize the Pointer to the Published Items
 		currItem = curr;
 
 		printf("\n");
